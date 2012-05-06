@@ -10,6 +10,13 @@ if not os.environ.get('PROD'):
 
 db = SQLAlchemy(app)
 
+class Urls(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String)
+
+    def __init__(self, name):
+        self.name = name
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
