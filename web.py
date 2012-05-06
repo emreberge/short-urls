@@ -10,12 +10,12 @@ if not os.environ.get('PROD'):
 
 db = SQLAlchemy(app)
 
-class Urls(db.Model):
+class Url(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String)
 
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, url):
+        self.url = url
 
 
 if __name__ == "__main__":
