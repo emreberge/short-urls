@@ -18,14 +18,19 @@ class Url(db.Model):
         self.url = url
         
 @app.route("/", methods=['POST'])
-def addURL():
-    url = Url(request.form['url'])
+def add_url_route():
+    id = add_url_to_db(request.form['url'])
+    return 'id: %(id)d' % { 'id': id }
+    
+def add_url_to_db(url_string):
+    url = Url(url_string)
     db.session.add(url)
     db.session.commit()
-    return 'id: %(id)d' % { 'id': url.id }
+    return url.id
+    
     
 @app.route("/<short_url>")
-def redirectToId(short_url):
+def redirect_route(short_url):
     url = Url.query.get(short_url)
     return redirect(url.url)
 
