@@ -18,8 +18,8 @@ class Test_integration_tests(unittest.TestCase):
         manage.drop_all()
 
     def test_adding_and_retriving(self):
-        self.assertEqual(add_url_to_db('http://emreberge.com'), 1)
-        response = redirect_route(1)
+        self.assertEqual(add_url_to_db('http://emreberge.com'), 'B')
+        response = redirect_route('B')
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers['Location'], 'http://emreberge.com')
         

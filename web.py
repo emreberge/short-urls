@@ -43,12 +43,12 @@ def add_url_to_db(url_string):
     url = Url(url_string)
     db.session.add(url)
     db.session.commit()
-    return url.id
+    return url.short_url()
     
     
 @app.route("/<short_url>")
 def redirect_route(short_url):
-    url = Url.query.get(short_url)
+    url = Url.query.get(Url.id_for_short_url(short_url))
     return url.redirect()
 
 if __name__ == "__main__":
