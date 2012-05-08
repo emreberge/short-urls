@@ -37,6 +37,22 @@ class Test_Url(unittest.TestCase):
         url = Url('emreberge.com');
         self.check_redirect_response(url.redirect(), 'http://emreberge.com')
         
+    def test_creating_with_id_1_returns_base64_encoded_short_url(self):
+        url = Url('');
+        url.id = 1;
+        self.assertEqual(url.short_url(), 'B')
+        
+    def test_creating_with_id_23_returns_base64_encoded_short_url(self):
+        url = Url('');
+        url.id = 23;
+        self.assertEqual(url.short_url(), 'X')
+        
+    def test_getting_id_for_short_url_B(self):
+        self.assertEqual(Url.id_for_short_url('B'), 1)
+    
+    def test_getting_id_for_short_url_X(self):
+        self.assertEqual(Url.id_for_short_url('X'), 23)
+        
 class Test_b64(unittest.TestCase):
     
     def test_1(self):
