@@ -4,6 +4,7 @@ os.environ['DATABASE_URL'] = 'sqlite:///:memory:'
 from web import *
 import manage
 from flask import Response
+from b64 import *
 
 
 class Test_integration_tests(unittest.TestCase):
@@ -36,6 +37,13 @@ class Test_Url(unittest.TestCase):
         url = Url('emreberge.com');
         self.check_redirect_response(url.redirect(), 'http://emreberge.com')
         
+class Test_b64(unittest.TestCase):
+    
+    def test_1(self):
+        self.assertEqual(num_decode(num_encode(1)),1)
+        
+    def test_encode_1234123(self):
+        self.assertEqual(num_decode(num_encode(1234123)),1234123)
         
 if __name__ == '__main__':
     unittest.main()
