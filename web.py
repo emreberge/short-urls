@@ -16,9 +16,13 @@ class Url(db.Model):
 
     def __init__(self, url):
         self.url = url
-        
+    
+    def _unlocal_url(self):
+        http = 'http://'
+        return self.url if self.url.startswith(http) else http + self.url
+    
     def redirect(self):
-        return redirect(self.url);
+        return redirect(self._unlocal_url());
         
 @app.route("/", methods=['POST'])
 def add_url_route():

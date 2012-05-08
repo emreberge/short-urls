@@ -32,6 +32,9 @@ class Test_Url(unittest.TestCase):
         url = Url('http://emreberge.com');
         self.check_redirect_response(url.redirect(), 'http://emreberge.com')
 
+    def test_creating_with_relative_url_should_recirect_to_full_url(self):
+        url = Url('emreberge.com');
+        self.check_redirect_response(url.redirect(), 'http://emreberge.com')
         
         
 if __name__ == '__main__':
