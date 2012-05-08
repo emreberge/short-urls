@@ -17,6 +17,9 @@ class Url(db.Model):
     def __init__(self, url):
         self.url = url
         
+    def redirect(self):
+        return redirect(self.url);
+        
 @app.route("/", methods=['POST'])
 def add_url_route():
     id = add_url_to_db(request.form['url'])
@@ -32,7 +35,7 @@ def add_url_to_db(url_string):
 @app.route("/<short_url>")
 def redirect_route(short_url):
     url = Url.query.get(short_url)
-    return redirect(url.url)
+    return url.redirect()
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

@@ -22,5 +22,17 @@ class Test_integration_tests(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers['Location'], 'http://emreberge.com')
         
+class Test_Url(unittest.TestCase):
+    
+    def check_redirect_response(self, response, expected_url):
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.headers['Location'], expected_url)
+    
+    def test_craeting_with_valid_url_should_redirect_to_the_same_url(self):
+        url = Url('http://emreberge.com');
+        self.check_redirect_response(url.redirect(), 'http://emreberge.com')
+
+        
+        
 if __name__ == '__main__':
     unittest.main()
