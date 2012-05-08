@@ -8,8 +8,13 @@ from flask import Response
 
 class Test_integration_tests(unittest.TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         manage.create_all()
+        
+    @classmethod
+    def tearDownClass(cls):
+        manage.drop_all()
 
     def test_adding_and_retriving(self):
         self.assertEqual(add_url_to_db('http://emreberge.com'), 1)
