@@ -35,8 +35,8 @@ class Url(db.Model):
         
 @app.route("/", methods=['POST'])
 def add_url_route():
-    id = add_url_to_db(request.form['url'])
-    return 'id: %(id)d' % { 'id': id }
+    short_url = add_url_to_db(request.form['url'])
+    return 'id: ' + short_url;
     
 def add_url_to_db(url_string):
     url = Url(url_string)
