@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, redirect, url_for, request, make_response
+from flask import Flask, render_template, redirect, url_for, request, make_response, abort
 from flaskext.sqlalchemy import SQLAlchemy
 from b64 import *
 
@@ -32,7 +32,6 @@ class Url(db.Model):
     @classmethod
     def id_for_short_url(cls, short_url):
         return num_decode(short_url)
-    
         
 @app.route("/", methods=['POST'])
 def add_url_route():
@@ -48,7 +47,7 @@ def add_url_to_db(url_string):
     
 @app.route("/<short_url>")
 def redirect_route(short_url):
-    url = Url.query.get(Url.id_for_short_url(short_url))
+    url = Url.query.get(Url.id_for_short_url(short_url)) or abort(404)
     return url.redirect()
 
 if __name__ == "__main__":

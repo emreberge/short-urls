@@ -4,6 +4,7 @@ os.environ['DATABASE_URL'] = 'sqlite:///:memory:'
 from web import *
 import manage
 from flask import Response
+from werkzeug.exceptions import NotFound
 from b64 import *
 
 
@@ -23,6 +24,10 @@ class Test_integration_tests(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers['Location'], 'http://emreberge.com')
         
+    def test_retrieving_non_existing_short_url_should_result_404(self):
+        with self.assertRaises(NotFound):
+            redirect_route('xDseF')
+                
 class Test_Url(unittest.TestCase):
     
     def check_redirect_response(self, response, expected_url):
