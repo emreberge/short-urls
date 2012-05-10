@@ -34,6 +34,14 @@ class Test_integration_tests(unittest.TestCase):
     def test_retrieving_non_existing_short_url_should_result_404(self):
         with self.assertRaises(NotFound):
             redirect_route('xDseF')
+            
+    def test_retrieving_malformated_short_url_char_should_result_404(self):
+        with self.assertRaises(NotFound):
+            redirect_route('*')
+            
+    def test_retrieving_malformated_short_url_string_should_result_404(self):
+        with self.assertRaises(NotFound):
+            redirect_route('*#%')
                 
 class Test_Url(unittest.TestCase):
     
@@ -72,6 +80,10 @@ class Test_b64(unittest.TestCase):
         
     def test_encode_1234123(self):
         self.assertEqual(num_decode(num_encode(1234123)),1234123)
+        
+    def test_decode_ilegal_char_should_reise_illegal_argument_exeption(self):
+        with self.assertRaises(ValueError):
+            num_decode('*')
         
 if __name__ == '__main__':
     unittest.main()

@@ -47,8 +47,11 @@ def add_url_to_db(url_string):
     
 @app.route("/<short_url>")
 def redirect_route(short_url):
-    url = Url.query.get(Url.id_for_short_url(short_url)) or abort(404)
-    return url.redirect()
+    try:
+        url = Url.query.get(Url.id_for_short_url(short_url)) or abort(404)
+        return url.redirect()
+    except ValueError:
+        abort(404)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
