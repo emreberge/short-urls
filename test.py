@@ -1,6 +1,7 @@
 import unittest
 import os
 os.environ['DATABASE_URL'] = 'sqlite:///:memory:'
+import web
 from web import *
 import manage
 from flask import Response
@@ -9,21 +10,27 @@ from b64 import *
 
 
 class Test_integration_tests(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        manage.create_all()
         
-    @classmethod
-    def tearDownClass(cls):
+    def setUp(self):
+        manage.create_all()
+        web.app.config['TESTING'] = True
+        self.app = web.app.test_client()
+        
+    def tearDown(self):
         manage.drop_all()
-
-    def test_adding_and_retriving(self):
+        
+    def test_adding(self):
+        short_url = self.app.post('/', data=dict(url='http://emreberge.com')).data
+        #db index starts at 1 = B
+        self.assertEqual(short_url, 'B')
+    
+    def test_retreving(self):
         self.assertEqual(add_url_to_db('http://emreberge.com'), 'B')
-        response = redirect_route('B')
+        response = self.app.get('/B')
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers['Location'], 'http://emreberge.com')
         
+               
     def test_retrieving_non_existing_short_url_should_result_404(self):
         with self.assertRaises(NotFound):
             redirect_route('xDseF')
