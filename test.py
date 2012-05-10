@@ -24,13 +24,42 @@ class Test_integration_tests(unittest.TestCase):
         #db index starts at 1 = B
         self.assertEqual(short_url, 'B')
     
-    def test_retreving(self):
+    def test_craeting_with_valid_url_should_redirect_to_the_same_url(self):
         self.assertEqual(add_url_to_db('http://emreberge.com'), 'B')
         response = self.app.get('/B')
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers['Location'], 'http://emreberge.com')
+    
+    def test_should_work_with_https(self):
+        self.assertEqual(add_url_to_db('https://google.com'), 'B')
+        response = self.app.get('/B')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.headers['Location'], 'https://google.com')
+
+    def test_should_work_with_url(self):
+        self.assertEqual(add_url_to_db('72.26.203.99/939/'), 'B')
+        response = self.app.get('/B')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.headers['Location'], 'http://72.26.203.99/939/')
+
+    def test_shoudl_work_with_relative_url(self):
+        self.assertEqual(add_url_to_db('emreberge.com'), 'B')
+        response = self.app.get('/B')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.headers['Location'], 'http://emreberge.com')
+
+    def test_mail_links_should_return_400(self):
+        response = self.app.post('/', data=dict(url='mailto:spam@spamer.com'))
+        self.assertEqual(response.status_code, 400)
         
-               
+    def test_javascript_should_return_400(self):
+        response = self.app.post('/', data=dict(url='javascript:alert(\'BAM!\')'))
+        self.assertEqual(response.status_code, 400)
+        
+    def test_non_valid_url_should_return_400(self):
+        response = self.app.post('/', data=dict(url='this/url/is/not/valid'))
+        self.assertEqual(response.status_code, 400)
+
     def test_retrieving_non_existing_short_url_should_result_404(self):
         with self.assertRaises(NotFound):
             redirect_route('xDseF')
@@ -48,22 +77,14 @@ class Test_Url(unittest.TestCase):
     def check_redirect_response(self, response, expected_url):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers['Location'], expected_url)
-    
-    def test_craeting_with_valid_url_should_redirect_to_the_same_url(self):
-        url = Url('http://emreberge.com');
-        self.check_redirect_response(url.redirect(), 'http://emreberge.com')
-
-    def test_creating_with_relative_url_should_recirect_to_full_url(self):
-        url = Url('emreberge.com');
-        self.check_redirect_response(url.redirect(), 'http://emreberge.com')
-        
+            
     def test_creating_with_id_1_returns_base64_encoded_short_url(self):
-        url = Url('');
+        url = Url('http://emreberge.com');
         url.id = 1;
         self.assertEqual(url.short_url(), 'B')
         
     def test_creating_with_id_23_returns_base64_encoded_short_url(self):
-        url = Url('');
+        url = Url('http://emreberge.com');
         url.id = 23;
         self.assertEqual(url.short_url(), 'X')
         
