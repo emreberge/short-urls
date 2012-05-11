@@ -18,17 +18,15 @@ class Test_integration_tests(unittest.TestCase):
         
     def tearDown(self):
         manage.drop_all()
-        
-    def test_adding(self):
-        short_url = self.app.post('/', data=dict(url='http://emreberge.com')).data
-        #db index starts at 1 = B
-        self.assertEqual(short_url, 'B')
+
+
+# Positive adding/redirecting test (db start with index 1 = short url B)
     
     def test_craeting_with_valid_url_should_redirect_to_the_same_url(self):
         self.redirect_works_for('http://emreberge.com', 'http://emreberge.com')
         
     def redirect_works_for(self, test_url, redirect_url):
-        self.assertEqual(add_url_to_db(test_url), 'B')
+        self.assertEqual(self.app.post('/', data=dict(url=test_url)).data, 'B')
         response = self.app.get('/B')
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers['Location'], redirect_url)
@@ -42,30 +40,39 @@ class Test_integration_tests(unittest.TestCase):
     def test_shoudl_work_with_relative_url(self):
         self.redirect_works_for('emreberge.com', 'http://emreberge.com')
         
-    def test_mail_links_should_return_400(self):
-        response = self.app.post('/', data=dict(url='mailto:spam@spamer.com'))
-        self.assertEqual(response.status_code, 400)
+
+# Negative adding tests
         
+    def test_mail_links_should_return_400(self):
+        self.adding_should_fail_with_error_for('mailto:spam@spamer.com', 400)
+        
+    def adding_should_fail_with_error_for(self, url_to_add, error_code): 
+        response = self.app.post('/', data=dict(url=url_to_add))
+        self.assertEqual(response.status_code, error_code)
+
     def test_javascript_should_return_400(self):
-        response = self.app.post('/', data=dict(url='javascript:alert(\'BAM!\')'))
-        self.assertEqual(response.status_code, 400)
+        self.adding_should_fail_with_error_for('javascript:alert(\'BAM!\')', 400)
         
     def test_non_valid_url_should_return_400(self):
-        response = self.app.post('/', data=dict(url='this/url/is/not/valid'))
-        self.assertEqual(response.status_code, 400)
+        self.adding_should_fail_with_error_for('this/url/is/not/valid', 400)
 
-    def test_retrieving_non_existing_short_url_should_result_404(self):
-        response = self.app.get('/xDseF')
-        self.assertEqual(response.status_code, 404)
+
+# Negative redirect tests
+
+    def test_retrieving_non_existing_short_url_should_result_404(self):        
+        self.redirect_fails_with_error('/xDseF', 404)
+        
+    def redirect_fails_with_error(self, test_url, error_code):
+        response = self.app.get('test_url')
+        self.assertEqual(response.status_code, error_code)
             
     def test_retrieving_malformated_short_url_char_should_result_404(self):
-        response = self.app.get('/*')
-        self.assertEqual(response.status_code, 404)
+        self.redirect_fails_with_error('/*', 404)
             
     def test_retrieving_malformated_short_url_string_should_result_404(self):
-        response = self.app.get('/*#%')
-        self.assertEqual(response.status_code, 404)
-                
+        self.redirect_fails_with_error('/*#%', 404)
+
+        
 class Test_Url(unittest.TestCase):
     
     def check_redirect_response(self, response, expected_url):
@@ -87,7 +94,16 @@ class Test_Url(unittest.TestCase):
     
     def test_getting_id_for_short_url_X(self):
         self.assertEqual(Url.id_for_short_url('X'), 23)
+
+    def test_create_json_response_with_data(self):
+        data = {'id':5, 'name':'Test'}
+        response = create_json_response_with_data(data)
         
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        self.assertEqual(response.data, '{ "id": "5", "name": "Test"}')
+
+                
 class Test_b64(unittest.TestCase):
     
     def test_1(self):
