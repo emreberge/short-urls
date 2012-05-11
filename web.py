@@ -1,4 +1,5 @@
 import os
+import simplejson
 from flask import Flask, render_template, redirect, url_for, request, make_response, abort
 from flaskext.sqlalchemy import SQLAlchemy
 from b64 import *
@@ -34,17 +35,23 @@ class Url(db.Model):
         
 @app.route("/", methods=['POST'])
 def add_url_route():
-    short_url = add_url_to_db(request.form['url'])
-    return short_url;
+    url = add_url_to_db(request.form['url'])
+    return create_json_response_with_short_url(url.short_url())
     
 def add_url_to_db(url_string):
     try:
         url = Url(url_string)
         db.session.add(url)
         db.session.commit()
-        return url.short_url()
+        return url
     except ValueError:
         abort(400)
+
+def create_json_response_with_short_url(short_url):
+    response = make_response()
+    response.headers['Content-Type'] = 'application/json'
+    response.data = simplejson.dumps({'short_url':short_url})
+    return response;
     
 @app.route("/<short_url>")
 def redirect_route(short_url):
@@ -53,7 +60,7 @@ def redirect_route(short_url):
         return redirect(url.url)
     except ValueError:
         abort(404)
-
+        
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)

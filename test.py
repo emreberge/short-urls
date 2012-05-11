@@ -27,8 +27,14 @@ class Test_integration_tests(unittest.TestCase):
         self.redirect_works_for('http://emreberge.com', 'http://emreberge.com')
         
     def redirect_works_for(self, test_url, redirect_url):
-        self.assertEqual(self.app.post('/', data=dict(url=test_url)).data, DB_FIRST_INDEX)
-        response = self.app.get(DB_FIRST_INDEX)
+        response_data = self.app.post('/', data=dict(url=test_url)).data
+        self.response_data_is_json(response_data, DB_FIRST_INDEX)
+        self.response_redirects_to(self.app.get(DB_FIRST_INDEX), redirect_url)
+        
+    def response_data_is_json(self, data, short_url):
+        self.assertEqual(data, '{"short_url": "%s"}' % short_url)
+    
+    def response_redirects_to(self, response, redirect_url):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers['Location'], redirect_url)
     
@@ -95,15 +101,6 @@ class Test_Url(unittest.TestCase):
     
     def test_getting_id_for_short_url_X(self):
         self.assertEqual(Url.id_for_short_url('X'), 23)
-
-    def test_create_json_response_with_data(self):
-        data = {'id':5, 'name':'Test'}
-        response = create_json_response_with_data(data)
-        
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.headers['Content-Type'], 'application/json')
-        self.assertEqual(response.data, '{ "id": "5", "name": "Test"}')
-
                 
 class Test_b64(unittest.TestCase):
     
