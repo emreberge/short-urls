@@ -61,16 +61,16 @@ class Test_integration_tests(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_retrieving_non_existing_short_url_should_result_404(self):
-        with self.assertRaises(NotFound):
-            redirect_route('xDseF')
+        response = self.app.get('/xDseF')
+        self.assertEqual(response.status_code, 404)
             
     def test_retrieving_malformated_short_url_char_should_result_404(self):
-        with self.assertRaises(NotFound):
-            redirect_route('*')
+        response = self.app.get('/*')
+        self.assertEqual(response.status_code, 404)
             
     def test_retrieving_malformated_short_url_string_should_result_404(self):
-        with self.assertRaises(NotFound):
-            redirect_route('*#%')
+        response = self.app.get('/*#%')
+        self.assertEqual(response.status_code, 404)
                 
 class Test_Url(unittest.TestCase):
     
