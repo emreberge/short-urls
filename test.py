@@ -25,29 +25,23 @@ class Test_integration_tests(unittest.TestCase):
         self.assertEqual(short_url, 'B')
     
     def test_craeting_with_valid_url_should_redirect_to_the_same_url(self):
-        self.assertEqual(add_url_to_db('http://emreberge.com'), 'B')
+        self.redirect_works_for('http://emreberge.com', 'http://emreberge.com')
+        
+    def redirect_works_for(self, test_url, redirect_url):
+        self.assertEqual(add_url_to_db(test_url), 'B')
         response = self.app.get('/B')
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.headers['Location'], 'http://emreberge.com')
+        self.assertEqual(response.headers['Location'], redirect_url)
     
     def test_should_work_with_https(self):
-        self.assertEqual(add_url_to_db('https://google.com'), 'B')
-        response = self.app.get('/B')
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.headers['Location'], 'https://google.com')
+        self.redirect_works_for('https://google.com', 'https://google.com')
 
     def test_should_work_with_url(self):
-        self.assertEqual(add_url_to_db('72.26.203.99/939/'), 'B')
-        response = self.app.get('/B')
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.headers['Location'], 'http://72.26.203.99/939/')
+        self.redirect_works_for('72.26.203.99/939/', 'http://72.26.203.99/939/')
 
     def test_shoudl_work_with_relative_url(self):
-        self.assertEqual(add_url_to_db('emreberge.com'), 'B')
-        response = self.app.get('/B')
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.headers['Location'], 'http://emreberge.com')
-
+        self.redirect_works_for('emreberge.com', 'http://emreberge.com')
+        
     def test_mail_links_should_return_400(self):
         response = self.app.post('/', data=dict(url='mailto:spam@spamer.com'))
         self.assertEqual(response.status_code, 400)
