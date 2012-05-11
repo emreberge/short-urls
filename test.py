@@ -8,6 +8,7 @@ from flask import Response
 from werkzeug.exceptions import NotFound
 from b64 import *
 
+DB_FIRST_INDEX = 'B'
 
 class Test_integration_tests(unittest.TestCase):
         
@@ -20,14 +21,14 @@ class Test_integration_tests(unittest.TestCase):
         manage.drop_all()
 
 
-# Positive adding/redirecting test (db start with index 1 = short url B)
+# Positive adding/redirecting tests
     
     def test_craeting_with_valid_url_should_redirect_to_the_same_url(self):
         self.redirect_works_for('http://emreberge.com', 'http://emreberge.com')
         
     def redirect_works_for(self, test_url, redirect_url):
-        self.assertEqual(self.app.post('/', data=dict(url=test_url)).data, 'B')
-        response = self.app.get('/B')
+        self.assertEqual(self.app.post('/', data=dict(url=test_url)).data, DB_FIRST_INDEX)
+        response = self.app.get(DB_FIRST_INDEX)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers['Location'], redirect_url)
     
