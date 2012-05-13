@@ -10,7 +10,7 @@ from b64 import *
 
 DB_FIRST_INDEX = 'B'
 
-class Test_integration_tests(unittest.TestCase):
+class Test_Web_App(unittest.TestCase):
         
     def setUp(self):
         manage.create_all()
