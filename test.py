@@ -27,7 +27,7 @@ class Test_Web_App(unittest.TestCase):
         self.url_redirects_to('http://emreberge.com', 'http://emreberge.com')
         
     def url_redirects_to(self, test_url, redirect_url):
-        response_data = self.app.post('/', data=dict(url=test_url)).data
+        response_data = self.app.post('/', data=dict(url_address=test_url)).data
         self.response_data_is_json(response_data, DB_FIRST_INDEX)
         self.response_redirects_to(self.app.get(DB_FIRST_INDEX), redirect_url)
         

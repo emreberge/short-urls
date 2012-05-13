@@ -37,17 +37,19 @@ class Url(db.Model):
         
 @app.route("/", methods=['POST'])
 def add_url_route():
-    url = add_url_to_db(request.form['url'])
+    url = new_url_from_address_handling_errors(request.form['url_address'])
+    add_url_to_db(url)
     return create_json_response_with_short_url(url.short_url())
     
-def add_url_to_db(url_string):
+def new_url_from_address_handling_errors(url_address):
     try:
-        url = Url(url_string)
-        db.session.add(url)
-        db.session.commit()
-        return url
+        return Url(url_address)
     except ValueError:
         abort(400)
+
+def add_url_to_db(url):
+        db.session.add(url)
+        db.session.commit()
 
 def create_json_response_with_short_url(short_url):
     response = make_response()
