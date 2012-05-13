@@ -19,12 +19,14 @@ class Url(db.Model):
     url = db.Column(db.String)
 
     def __init__(self, url):
-        if is_valid_url(url):
-            self.url = url
-        elif is_valid_url('http://' + url):
-            self.url = 'http://' + url
-        else:
-            raise ValueError('Invalid URL')
+        self.url = self.validate_url_heuristically(url)
+            
+    def validate_url_heuristically(self, url):
+        if not is_valid_url(url):
+            url = 'http://' + url;
+            if not is_valid_url(url):
+                raise ValueError('Invalid URL')
+        return url
         
     def short_url(self):
         return num_encode(self.id)
