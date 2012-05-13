@@ -57,12 +57,16 @@ def create_json_response_with_short_url(short_url):
     
 @app.route("/<short_url>")
 def redirect_route(short_url):
+    id = id_for_short_url_handling_errors(short_url)
+    url = Url.query.get(id) or abort(404)
+    return redirect(url.url)
+        
+def id_for_short_url_handling_errors(short_url):
     try:
-        url = Url.query.get(Url.id_for_short_url(short_url)) or abort(404)
-        return redirect(url.url)
+        return Url.id_for_short_url(short_url)
     except ValueError:
         abort(404)
-        
+         
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)

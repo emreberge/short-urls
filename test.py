@@ -73,11 +73,11 @@ class Test_Web_App(unittest.TestCase):
         self.redirect_fails_with_error('/xDseF', 404)
         
     def redirect_fails_with_error(self, test_url, error_code):
-        response = self.app.get('test_url')
+        response = self.app.get(test_url)
         self.assertEqual(response.status_code, error_code)
             
     def test_malformated_short_url_char_should_faile_with_404(self):
-        self.redirect_fails_with_error('/*', 404)
+        self.redirect_fails_with_error('*', 404)
             
     def test_malformated_short_url_string_should_fail_with_404(self):
         self.redirect_fails_with_error('/*#%', 404)
@@ -100,7 +100,7 @@ class Test_Url(unittest.TestCase):
     
     def test_short_url_X(self):
         self.assertEqual(Url.id_for_short_url('X'), 23)
-                
+                        
 class Test_b64(unittest.TestCase):
     
     def test_encode_decode_1(self):
