@@ -47,6 +47,9 @@ class Test_integration_tests(unittest.TestCase):
     def test_shoudl_work_with_relative_url(self):
         self.redirect_works_for('emreberge.com', 'http://emreberge.com')
         
+    def test_should_work_for_urls_with_parameters(self):
+        self.redirect_works_for('http://www.youtube.com/watch?v=oHg5SJYRHA0', 'http://www.youtube.com/watch?v=oHg5SJYRHA0');
+        
 
 # Negative adding tests
         
