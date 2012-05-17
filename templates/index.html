@@ -3,34 +3,7 @@
   <head>
     <title>Short Urls</title>
     <script type="text/javascript" src="/static/jquery-1.7.1.min.js"></script>
-    <script type="text/javascript">
-/* attach a submit handler to the form */
-$(document).ready(function() {
-    $("#shortenUrlForm").submit(function(event) {
-
-        /* stop form from submitting normally */
-        event.preventDefault();
-
-        /* get some values from elements on the page: */
-        var $form = $(this),
-        term = $form.find('input[name="url_address"]').val(),
-        url = $form.attr('action');
-
-        /* Send the data using post and put the results in a div */
-        $.post(url, {
-            url_address: term
-        },
-        function(data) {
-            var content = data.short_url;
-            $("#result").empty().append(content);
-        }
-        ).error(
-        function() {
-            alert("".concat('The url: ', term, ' is not valid or an allowed address.'));
-        });
-    });
-});
-    </script>
+    <script type="text/javascript" src="/static/short_urls.js" ></script>
   </head>
   <body>
 	<h1>Short URLs</h1>
