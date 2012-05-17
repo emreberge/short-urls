@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 
 if not os.environ.get('PROD'):
-    app.config['SQLALCHEMY_ECHO'] = True
+    app.config['SQLALCHEMY_ECHO'] = False
     app.debug = True
 
 db = SQLAlchemy(app)
@@ -34,10 +34,16 @@ class Url(db.Model):
     @classmethod
     def id_for_short_url(cls, short_url):
         return num_decode(short_url)
-        
+
+@app.route("/")
+def index():
+    return render_template('index.html')
+
+REQUEST_URL_PARAMETER_NAME='url_address'
+
 @app.route("/", methods=['POST'])
 def add_url_route():
-    url = new_url_from_address_handling_errors(request.form['url_address'])
+    url = new_url_from_address_handling_errors(request.form[REQUEST_URL_PARAMETER_NAME])
     add_url_to_db(url)
     return create_json_response_with_short_url(url.short_url())
     

@@ -27,9 +27,15 @@ class Test_Web_App(unittest.TestCase):
         self.url_redirects_to('http://emreberge.com', 'http://emreberge.com')
         
     def url_redirects_to(self, test_url, redirect_url):
-        response_data = self.app.post('/', data=dict(url_address=test_url)).data
+        request_data = self.add_request_data_with_url(test_url)
+        response_data = self.app.post('/', data=request_data).data
         self.response_data_is_json(response_data, DB_FIRST_INDEX)
         self.response_redirects_to(self.app.get(DB_FIRST_INDEX), redirect_url)
+        
+    def add_request_data_with_url(self, url_address):
+        request_data=dict()
+        request_data[REQUEST_URL_PARAMETER_NAME] = url_address
+        return request_data
         
     def response_data_is_json(self, data, short_url):
         self.assertEqual(data, '{"short_url": "%s"}' % short_url)
@@ -56,8 +62,9 @@ class Test_Web_App(unittest.TestCase):
     def test_mailto_should_fail_with_400(self):
         self.adding_should_fail_with_error('mailto:spam@spamer.com', 400)
         
-    def adding_should_fail_with_error(self, url_to_add, error_code): 
-        response = self.app.post('/', data=dict(url=url_to_add))
+    def adding_should_fail_with_error(self, url_to_add, error_code):
+        request_data = self.add_request_data_with_url(url_to_add)
+        response = self.app.post('/', data=request_data)
         self.assertEqual(response.status_code, error_code)
 
     def test_javascript_should_fail_with_400(self):
@@ -65,7 +72,13 @@ class Test_Web_App(unittest.TestCase):
         
     def test_non_valid_url_should_fail_with_400(self):
         self.adding_should_fail_with_error('this/url/is/not/valid', 400)
-
+        
+    def test_empty_url_should_fail_with_400(self):
+        self.adding_should_fail_with_error('', 400)
+        
+    def test_no_parameters_should_fail_with_400(self):
+        response = self.app.post('/')
+        self.assertEqual(response.status_code, 400)
 
 # Negative redirect tests
 
