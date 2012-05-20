@@ -20,7 +20,7 @@ function submitSortenUrlForm(event) {
 
     $.post(form.action, form.params)
     .success(function(data) {
-        addShortUrlToTable(data.short_url, form.params.url_address);
+        addShortUrlToList(data.short_url, form.params.url_address);
     })
     .error(function() {
        displayErrorForUrl(form.params.url_address);
@@ -37,9 +37,17 @@ function retrieveAddressAndActionFromForm($form) {
     }
 }
 
-function addShortUrlToTable(shortUrl, longUrl) {
+function addShortUrlToList(shortUrl, longUrl) {
     var href = urlByAppendUrlToLocation(shortUrl);
-    $('#result').prepend('<li>' + longUrl + ' <a href="' + href +'">' + href + '</a>');
+    var $listItem = $('<li>' + longUrl + ' <a href="' + href +'">' + href + '</a>');
+    $('#result').prepend($listItem);
+    appendClippyToElement($listItem, href);
+}
+
+function appendClippyToElement($element, copyUrl) {
+    var $clippy = $('<span>' + copyUrl + '</span>')
+    $element.append($clippy);
+    $clippy.clippy();
 }
 
 function urlByAppendUrlToLocation(url) {
