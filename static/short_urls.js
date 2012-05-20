@@ -43,7 +43,8 @@ function addShortUrlToTable(shortUrl, longUrl) {
 }
 
 function urlByAppendUrlToLocation(url) {
-    return $(location).attr('href') + url;
+    //If attr href is used '/#' will break the page
+    return $(location).attr('host') + '/' + url;
 }
 
 function displayErrorForUrl(url) {
