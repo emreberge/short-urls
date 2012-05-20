@@ -31,7 +31,12 @@ function retrieveAddressAndActionFromForm($form) {
 }
 
 function addShortUrlToTable(shortUrl, longUrl) {
-    $("#result").prepend("<tr><td>" + longUrl + "<td>" + shortUrl);
+    var href = urlByAppendUrlToLocation(shortUrl);
+    $("#result").prepend("<tr><td>" + longUrl + '<td><a href="' + href +'">' + href + '</a>');
+}
+
+function urlByAppendUrlToLocation(url) {
+    return $(location).attr('href') + url;
 }
 
 function displayErrorForUrl(url) {
