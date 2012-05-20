@@ -39,11 +39,20 @@ function retrieveAddressAndActionFromForm($form) {
 
 function addShortUrlToTable(shortUrl, longUrl) {
     var href = urlByAppendUrlToLocation(shortUrl);
-    $('#result').prepend('<li>' + longUrl + ' <a href="' + href +'">' + href + '</a>');
+    var $listItem = $('<li>' + longUrl + ' <a href="http://' + href +'">' + href + '</a>');
+    $('#result').prepend($listItem);
+    appendClippyToElement($listItem, href);
+}
+
+function appendClippyToElement($element, copyUrl) {
+    var $clippy = $('<span>' + copyUrl + '</span>')
+    $element.append($clippy);
+    $clippy.clippy();
 }
 
 function urlByAppendUrlToLocation(url) {
-    return $(location).attr('href') + url;
+    //If attr href is used '/#' will break the page
+    return $(location).attr('host') + '/' + url;
 }
 
 function displayErrorForUrl(url) {
