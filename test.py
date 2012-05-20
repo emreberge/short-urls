@@ -27,12 +27,12 @@ class Test_Web_App(unittest.TestCase):
         self.url_redirects_to('http://emreberge.com', 'http://emreberge.com')
         
     def url_redirects_to(self, test_url, redirect_url):
-        request_data = self.add_request_data_with_url(test_url)
+        request_data = self.request_data_with_url(test_url)
         response_data = self.app.post('/', data=request_data).data
         self.response_data_is_json(response_data, DB_FIRST_INDEX)
         self.response_redirects_to(self.app.get(DB_FIRST_INDEX), redirect_url)
         
-    def add_request_data_with_url(self, url_address):
+    def request_data_with_url(self, url_address):
         request_data=dict()
         request_data[REQUEST_URL_PARAMETER_NAME] = url_address
         return request_data
@@ -63,7 +63,7 @@ class Test_Web_App(unittest.TestCase):
         self.adding_should_fail_with_error('mailto:spam@spamer.com', 400)
         
     def adding_should_fail_with_error(self, url_to_add, error_code):
-        request_data = self.add_request_data_with_url(url_to_add)
+        request_data = self.request_data_with_url(url_to_add)
         response = self.app.post('/', data=request_data)
         self.assertEqual(response.status_code, error_code)
 
