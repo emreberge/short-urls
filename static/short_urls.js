@@ -32,7 +32,7 @@ function retrieveAddressAndActionFromForm($form) {
 
 function addShortUrlToTable(shortUrl, longUrl) {
     var href = urlByAppendUrlToLocation(shortUrl);
-    $("#result").prepend("<tr><td>" + longUrl + '<td><a href="' + href +'">' + href + '</a>');
+    $("#result").prepend('<li>' + longUrl + ' <a href="' + href +'">' + href + '</a>');
 }
 
 function urlByAppendUrlToLocation(url) {

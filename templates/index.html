@@ -3,15 +3,18 @@
   <head>
     <meta charset="UTF-8">
     <title>Short Urls</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
     <script type="text/javascript" src="/static/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="/static/short_urls.js" ></script>
   </head>
   <body>
-    <h1>Short URLs</h1>
-    <form action="/" method="POST" id="shortenUrlForm">
-      <input type="text" name="url_address" placeholder="URL address...">
-      <input type="submit" value="Shorten">
-    </form>
-    <table id="result"></table>
+    <div class=page>
+      <h1>Short URLs</h1>
+      <form action="/" method="POST" id="shortenUrlForm">
+        <input type="text" name="url_address" placeholder="URL address...">
+        <input type="submit" value="Shorten">
+      </form>
+      <ul id="result"></ul>
+    </div>
   </body>
 </html>

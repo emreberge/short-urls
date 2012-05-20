@@ -1,0 +1,32 @@
+body {
+    font-family: sans-serif;
+    background: white;
+    color: #584B2F;
+}
+
+a, h1 {
+    color: #A81616;
+}
+
+a {
+    text-decoration: none;
+}
+
+h1 {
+    font-family: 'Georgia', serif;
+    border-bottom: 2px solid #E5E5E5;
+}
+
+.page {
+    margin: 2em auto;
+    width: 35em;
+    border: 5px solid #E5E5E5;
+    padding: 0.8em;
+    background: #F5F4ED;
+    text-align:center;
+}
+
+ul {
+    text-align:left;
+}
+
