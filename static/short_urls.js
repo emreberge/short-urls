@@ -1,10 +1,17 @@
 // Executed when the document has loaded.
 $(document).ready(function() {
     initilizeShortenUrlForm();
+    focusOnFirstInputOfFirstForm();
 });
 
 function initilizeShortenUrlForm() {
     $("#shortenUrlForm").submit(submitSortenUrlForm);
+}
+
+function focusOnFirstInputOfFirstForm() {
+    var $firstForm = $(document).find('form').filter(':first');
+    var $firstInput = $firstForm.find('input').filter(':first');
+    $firstInput.focus();
 }
 
 function submitSortenUrlForm(event) {
