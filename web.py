@@ -16,17 +16,17 @@ db = SQLAlchemy(app)
 
 class Url(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String)
+    url_address = db.Column(db.String)
 
-    def __init__(self, url):
-        self.url = self.validate_url_heuristically(url)
+    def __init__(self, url_address):
+        self.url_address = self.validate_url_heuristically(url_address)
             
-    def validate_url_heuristically(self, url):
-        if not is_valid_url(url):
-            url = 'http://' + url;
-            if not is_valid_url(url):
+    def validate_url_heuristically(self, url_address):
+        if not is_valid_url(url_address):
+            url_address = 'http://' + url_address;
+            if not is_valid_url(url_address):
                 raise ValueError('Invalid URL')
-        return url
+        return url_address
         
     def short_url(self):
         return num_encode(self.id)
@@ -54,13 +54,13 @@ def new_url_from_address_handling_errors(url_address):
         abort(400)
 
 def craete_or_retrieve_url_from_db(url):
-        existing_url = retrieve_url_with_url_address(url.url)
+        existing_url = retrieve_url_with_url_address(url.url_address)
         if existing_url is not None:
             return existing_url
         return add_url_to_db(url)
 
 def retrieve_url_with_url_address(url_address):
-    return Url.query.filter_by(url=url_address).first()
+    return Url.query.filter_by(url_address=url_address).first()
             
 def add_url_to_db(url):
     db.session.add(url)
@@ -77,7 +77,7 @@ def create_json_response_with_short_url(short_url):
 def redirect_route(short_url):
     id = id_for_short_url_handling_errors(short_url)
     url = Url.query.get(id) or abort(404)
-    return redirect(url.url)
+    return redirect(url.url_address)
         
 def id_for_short_url_handling_errors(short_url):
     try:
