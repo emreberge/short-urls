@@ -20,7 +20,7 @@ function submitSortenUrlForm(event) {
 
     $.post(form.action, form.params)
     .success(function(data) {
-        addShortUrlToTable(data.short_url, form.params.url_address);
+        addShortUrlToList(data.short_url, form.params.url_address);
     })
     .error(function() {
        displayErrorForUrl(form.params.url_address);
@@ -37,7 +37,7 @@ function retrieveAddressAndActionFromForm($form) {
     }
 }
 
-function addShortUrlToTable(shortUrl, longUrl) {
+function addShortUrlToList(shortUrl, longUrl) {
     var href = urlByAppendUrlToLocation(shortUrl);
     var $listItem = $('<li>' + longUrl + ' <a href="http://' + href +'">' + href + '</a>');
     $('#result').prepend($listItem);
