@@ -5,7 +5,7 @@ $(document).ready(function() {
 });
 
 function initilizeShortenUrlForm() {
-    $("#shortenUrlForm").submit(submitSortenUrlForm);
+    $('#shortenUrlForm').submit(submitSortenUrlForm);
 }
 
 function focusOnFirstInputOfFirstForm() {
@@ -39,7 +39,7 @@ function retrieveAddressAndActionFromForm($form) {
 
 function addShortUrlToTable(shortUrl, longUrl) {
     var href = urlByAppendUrlToLocation(shortUrl);
-    $("#result").prepend('<li>' + longUrl + ' <a href="' + href +'">' + href + '</a>');
+    $('#result').prepend('<li>' + longUrl + ' <a href="' + href +'">' + href + '</a>');
 }
 
 function urlByAppendUrlToLocation(url) {
@@ -47,5 +47,5 @@ function urlByAppendUrlToLocation(url) {
 }
 
 function displayErrorForUrl(url) {
-    alert("".concat('The url: "', url, '" is not valid or an allowed address.'));
+    alert(''.concat('The url: "', url, '" is not valid or an allowed address.'));
 }
