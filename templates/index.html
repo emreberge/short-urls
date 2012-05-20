@@ -1,21 +1,17 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset="UTF-8">
     <title>Short Urls</title>
     <script type="text/javascript" src="/static/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="/static/short_urls.js" ></script>
   </head>
   <body>
-	<h1>Short URLs</h1>
-	<p>
-			<form action="/" method="POST" id="shortenUrlForm">
-		   <input type="text" name="url_address" placeholder="URL address..." />
-		   <input type="submit" value="Shorten" />
-		  </form>
-		</p>
-		<p>
-			<table id="result">
-				</table>
-		</p>
-	</body>
+    <h1>Short URLs</h1>
+    <form action="/" method="POST" id="shortenUrlForm">
+      <input type="text" name="url_address" placeholder="URL address...">
+      <input type="submit" value="Shorten">
+    </form>
+    <table id="result"></table>
+  </body>
 </html>
