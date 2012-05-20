@@ -26,12 +26,12 @@ class Test_Web_App(unittest.TestCase):
     def test_valid_url(self):
         self.url_redirects_to('http://emreberge.com', 'http://emreberge.com')
         
-    def url_redirects_to(self, test_url, redirect_url):
+    def url_redirects_to(self, test_url, redirect_url, db_index=DB_FIRST_INDEX):
         request_data = self.request_data_with_url(test_url)
         response_data = self.app.post('/', data=request_data).data
-        self.response_data_is_json(response_data, DB_FIRST_INDEX)
-        self.response_redirects_to(self.app.get(DB_FIRST_INDEX), redirect_url)
-        
+        self.response_data_is_json(response_data, db_index)
+        self.response_redirects_to(self.app.get(db_index), redirect_url)
+                
     def request_data_with_url(self, url_address):
         request_data=dict()
         request_data[REQUEST_URL_PARAMETER_NAME] = url_address
@@ -80,6 +80,7 @@ class Test_Web_App(unittest.TestCase):
         response = self.app.post('/')
         self.assertEqual(response.status_code, 400)
 
+
 # Negative redirect tests
 
     def test_non_existing_short_url_should_fail_with_404(self):        
@@ -95,6 +96,12 @@ class Test_Web_App(unittest.TestCase):
     def test_malformated_short_url_string_should_fail_with_404(self):
         self.redirect_fails_with_error('/*#%', 404)
 
+
+# Feature tests
+
+    def test_urls_allready_in_the_db_should_return_same_short_url(self):
+        self.url_redirects_to('www.emreberge.com', 'http://www.emreberge.com', DB_FIRST_INDEX);
+        self.url_redirects_to('www.emreberge.com', 'http://www.emreberge.com', DB_FIRST_INDEX);
         
 class Test_Url(unittest.TestCase):
                 
