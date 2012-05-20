@@ -44,7 +44,7 @@ REQUEST_URL_PARAMETER_NAME='url_address'
 @app.route("/", methods=['POST'])
 def add_url_route():
     url = new_url_from_address_handling_errors(request.form[REQUEST_URL_PARAMETER_NAME])
-    add_url_to_db_if_not_allready_exist(url)
+    url = craete_or_retrieve_url_from_db(url)
     return create_json_response_with_short_url(url.short_url())
     
 def new_url_from_address_handling_errors(url_address):
@@ -53,13 +53,19 @@ def new_url_from_address_handling_errors(url_address):
     except ValueError:
         abort(400)
 
-def add_url_to_db_if_not_allready_exist(url):
-        url2 = Url.query.filter_by(url=url.url).first()
-        if url2 is None:
-            db.session.add(url)
-            db.session.commit()
-        else:
-            url.id = url2.id
+def craete_or_retrieve_url_from_db(url):
+        existing_url = retrieve_url_with_url_address(url.url)
+        if existing_url is not None:
+            return existing_url
+        return add_url_to_db(url)
+
+def retrieve_url_with_url_address(url_address):
+    return Url.query.filter_by(url=url_address).first()
+            
+def add_url_to_db(url):
+    db.session.add(url)
+    db.session.commit()
+    return url;
 
 def create_json_response_with_short_url(short_url):
     response = make_response()
