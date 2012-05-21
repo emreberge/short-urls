@@ -5,6 +5,11 @@ Yet an other url shortener. Because there isn't enough out there! This is a proj
 
 The project has lots of tests and serves as the documentation of the project.
 
+Scaling
+-------
+
+To handle the increasing amount of requests the database should be copied regularly and used by several instances of the app that redirect short urls.
+
 Setup & Run
 -----------
 
@@ -105,3 +110,45 @@ Response:
     
     HTTP/1.1 302 FOUND
     Location: http://www.emreberge.com
+    
+Pseudo encrypting the ids for hiding the id sequence from users
+---------------------------------------------------------------
+
+Inspired from [this](http://wiki.postgresql.org/wiki/Pseudo_encrypt) and [this](http://www.webthatworks.it/d1/content/pseudo-random-sequences-postgresql)
+
+How ever, without modification, this will restrict the short urls to 32 bits.
+
+Install the function:
+
+    CREATE OR REPLACE FUNCTION pseudo_encrypt(VALUE int) returns bigint AS $$
+    DECLARE
+    l1 int;
+    l2 int;
+    r1 int;
+    r2 int;
+    i int:=0;
+    BEGIN
+     l1:= (VALUE >> 16) & 65535;
+     r1:= VALUE & 65535;
+     WHILE i < 3 LOOP
+       l2 := r1;
+       r2 := l1 # ((((1366.0 * r1 + 150889) % 714025) / 714025.0) * 32767)::int;
+       l1 := l2;
+       r1 := r2;
+       i := i + 1;
+     END LOOP;
+     RETURN ((l1::bigint << 16) + r1);
+    END;
+    $$ LANGUAGE plpgsql strict immutable;
+
+Setup the sequence and column default:
+
+    create sequence short_url_seq owned by url.id;
+    alter table pr
+      alter column code
+        set default
+        pseudo_encrypt(nextval('short_url_seq'::int4));
+
+Reseting the sequence
+
+    select setval('short_url_seq', 1, true);
