@@ -8,7 +8,7 @@ from flask import Response
 from werkzeug.exceptions import NotFound
 from b64 import *
 
-DB_FIRST_INDEX = 'b'
+DB_FIRST_INDEX = 'aaaaab'
 
 class Test_Web_App(unittest.TestCase):
         
@@ -108,23 +108,26 @@ class Test_Url(unittest.TestCase):
     def test_url_with_id_1(self):
         url = Url('http://emreberge.com');
         url.id = 1;
-        self.assertEqual(url.short_url(), 'b')
+        self.assertEqual(url.short_url(), 'aaaaab')
         
     def test_url_with_id_23(self):
         url = Url('http://emreberge.com');
         url.id = 23;
-        self.assertEqual(url.short_url(), 'x')
+        self.assertEqual(url.short_url(), 'aaaaax')
         
     def test_short_url_B(self):
-        self.assertEqual(Url.id_for_short_url('b'), 1)
+        self.assertEqual(Url.id_for_short_url('aaaaab'), 1)
     
     def test_short_url_X(self):
-        self.assertEqual(Url.id_for_short_url('x'), 23)
+        self.assertEqual(Url.id_for_short_url('aaaaax'), 23)
                         
 class Test_b64(unittest.TestCase):
     
     def test_encode_decode_1(self):
         self.assertEqual(num_decode(num_encode(1)),1)
+        
+    def test_encode_should_pad_to_36_bit(self):
+        self.assertEqual(num_encode(1), 'aaaaab')
         
     def test_encode_decode_1234123(self):
         self.assertEqual(num_decode(num_encode(1234123)),1234123)

@@ -9,7 +9,7 @@ def num_encode(n):
         n, r = divmod(n, BASE)
         s.append(ALPHABET[r])
         if n == 0: break
-    return ''.join(reversed(s))
+    return ''.join(reversed(s)).rjust(6,ALPHABET[0])
 
 def num_decode(s):
     n = 0
