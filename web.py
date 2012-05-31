@@ -4,9 +4,13 @@ from flask import Flask, render_template, redirect, url_for, request, make_respo
 from flaskext.sqlalchemy import SQLAlchemy
 from b64 import *
 from url_validator import is_valid_url
+from IDHider import IDHider
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+
+id_hider = IDHider(os.environ.get('SECRET_KEY'))
 
 if not os.environ.get('PROD'):
     app.config['SQLALCHEMY_ECHO'] = False
@@ -29,11 +33,11 @@ class Url(db.Model):
         return url_address
         
     def short_url(self):
-        return num_encode(self.id)
+        return num_encode(id_hider.hide_id(self.id))
         
     @classmethod
     def id_for_short_url(cls, short_url):
-        return num_decode(short_url)
+        return id_hider.unhide_id(num_decode(short_url))
 
 @app.route("/")
 def index():

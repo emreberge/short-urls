@@ -1,6 +1,7 @@
 import unittest
 import os
 os.environ['DATABASE_URL'] = 'sqlite:///:memory:'
+os.environ['SECRET_KEY'] = 'test secret key'
 import web
 from web import *
 import manage
@@ -9,7 +10,7 @@ from werkzeug.exceptions import NotFound
 from b64 import *
 from IDHider import IDHider
 
-DB_FIRST_INDEX = 'b'
+DB_FIRST_INDEX = 'cEydtp'
 
 class Test_Web_App(unittest.TestCase):
         
@@ -109,18 +110,18 @@ class Test_Url(unittest.TestCase):
     def test_url_with_id_1(self):
         url = Url('http://emreberge.com');
         url.id = 1;
-        self.assertEqual(url.short_url(), 'b')
+        self.assertEqual(url.short_url(), 'cEydtp')
         
     def test_url_with_id_23(self):
         url = Url('http://emreberge.com');
         url.id = 23;
-        self.assertEqual(url.short_url(), 'x')
+        self.assertEqual(url.short_url(), 'cEydtz')
         
     def test_short_url_B(self):
-        self.assertEqual(Url.id_for_short_url('b'), 1)
+        self.assertEqual(Url.id_for_short_url('cEydtp'), 1)
     
     def test_short_url_X(self):
-        self.assertEqual(Url.id_for_short_url('x'), 23)
+        self.assertEqual(Url.id_for_short_url('cEydtz'), 23)
                         
 class Test_b64(unittest.TestCase):
     
