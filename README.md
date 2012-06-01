@@ -42,14 +42,18 @@ The fix is [here](http://nextmarvel.net/blog/2011/09/brew-install-postgresql-on-
 Resolve requirements
 
     sudo pip install -r requirements.txt
-		
-Create the tables
-
-    python manage.py create_all
-	
+			
 Set the `DATABASE_URL` environment variable to point to your PostgreSQL server:
 
     export DATABASE_URL=postgres://<user_name>@localhost/ShortUrls
+    
+Set the `SECRET_KEY` environment variable. This is used to hide the internal id structure from the external one.
+
+    export SECRET_KEY=my-super-secret-key
+    
+Create the tables
+
+    python manage.py create_all
 
 Run tests (tests are run with a in memory database)
 
@@ -74,6 +78,14 @@ Create an app
 Add shared database add on
 
     heroku addons:add shared-database
+    
+Optionally add a custom domain (you have to also add a CNAME to your DNS settings to point to the heroku address of the app)
+
+    heroku domains:add <custom domain>
+    
+Configure the secret key
+
+    heroku config:add SECRET_KEY=my-super-duper-secret-key
 
 Deploy
 
