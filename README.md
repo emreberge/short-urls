@@ -47,9 +47,9 @@ Set the `DATABASE_URL` environment variable to point to your PostgreSQL server:
 
     export DATABASE_URL=postgres://<user_name>@localhost/ShortUrls
     
-Set the `SECRET_KEY` environment variable. This is used to hide the internal id structure from the external one.
+Set the `SECRET_KEY` environment variable. This is used to hide the internal id structure from the external one. **THIS HAS TO BE 10 CHAR LONG**
 
-    export SECRET_KEY=my-super-secret-key
+    export SECRET_KEY=secret-key
     
 Create the tables
 
@@ -83,9 +83,9 @@ Optionally add a custom domain (you have to also add a CNAME to your DNS setting
 
     heroku domains:add <custom domain>
     
-Configure the secret key
+Configure the secret key **THIS HAS TO BE 10 CHAR LONG**
 
-    heroku config:add SECRET_KEY=my-super-duper-secret-key
+    heroku config:add SECRET_KEY=secret-key
 
 Deploy
 
