@@ -1,16 +1,16 @@
 import unittest
 import os
 os.environ['DATABASE_URL'] = 'sqlite:///:memory:'
-os.environ['SECRET_KEY'] = 'test secret key'
+os.environ['SECRET_KEY'] = 'Secret Key'
 import web
 from web import *
 import manage
 from flask import Response
 from werkzeug.exceptions import NotFound
 from b64 import *
-from IDHider import IDHider
+from skip32 import skip32
 
-DB_FIRST_INDEX = 'cEydtp'
+DB_FIRST_INDEX = 'bT6bSa'
 
 class Test_Web_App(unittest.TestCase):
         
@@ -110,18 +110,18 @@ class Test_Url(unittest.TestCase):
     def test_url_with_id_1(self):
         url = Url('http://emreberge.com');
         url.id = 1;
-        self.assertEqual(url.short_url(), 'cEydtp')
+        self.assertEqual(url.short_url(), 'bT6bSa')
         
     def test_url_with_id_23(self):
         url = Url('http://emreberge.com');
         url.id = 23;
-        self.assertEqual(url.short_url(), 'cEydtz')
+        self.assertEqual(url.short_url(), 'L2kam')
         
     def test_short_url_B(self):
-        self.assertEqual(Url.id_for_short_url('cEydtp'), 1)
+        self.assertEqual(Url.id_for_short_url('bT6bSa'), 1)
     
     def test_short_url_X(self):
-        self.assertEqual(Url.id_for_short_url('cEydtz'), 23)
+        self.assertEqual(Url.id_for_short_url('L2kam'), 23)
                         
 class Test_b64(unittest.TestCase):
     
@@ -135,65 +135,21 @@ class Test_b64(unittest.TestCase):
         with self.assertRaises(ValueError):
             num_decode('*')
 
-
-class Test_IDHider(unittest.TestCase):
+class IDHiding_Tests(unittest.TestCase):
 	
 	def setUp(self):
-		self.id_hider = IDHider('My secret key')
-
-	def test_convert__num_to_char(self):
-		number = ((0x21 << 24) | (0x21 << 16) | (0x21 << 8) | 0x21)
-		self.assertEquals(self.id_hider._num_to_char(number), '!!!!')
-		
-	def test_convert__char_to_num(self):
-		number = ((0x21 << 24) | (0x21 << 16) | (0x21 << 8) | 0x21)
-		self.assertEquals(self.id_hider._char_to_num('!!!!'), number)
+		self.id_hider = skip32('\x00\x99\x88\x77\x66\x55\x44\x33\x22\x11')
 	
-	def test_convert_both_ways_32bit_number(self):
-		number = 2**32-1
-		self.assertEquals(self.id_hider._char_to_num(self.id_hider._num_to_char(number)), number)
+	def test_both(self):
+		self.assertEquals(self.id_hider.hide_id(self.id_hider.unhide_id(0x33221100)), 0x33221100)
+	
+	def test_hiding(self):
+		hidden = self.id_hider.hide_id(0x33221100);
+		self.assertEquals(hidden, 0x819d5f1f)
 		
-	def test_encode(self):
-		value = "There are 10 types of people in the world: those who understand binary, and those who don't."
-		self.assertNotEqual(self.id_hider._encode(value),value)
-		
-	def test_decode(self):
-		value = "I'm not anti-social; I'm just not user friendly"
-		ecoded_value = self.id_hider._encode(value)
-		self.assertEquals(self.id_hider._decode(ecoded_value), value)
-		
-	def test_only_decodable_by_same_secret_key(self):
-		value = "I would love to change the world, but they won't give me the source code"
-		ecoded_value = self.id_hider._encode(value)
-		id_hider2 = IDHider('On other secret key')
-		self.assertNotEquals(id_hider2._decode(ecoded_value), value)
-		
-	def test_hide_id1(self):
-		id = 47548272628
-		hidden_id = self.id_hider.hide_id(id)
-		self.assertTrue(hidden_id < 2**32)
-		self.assertNotEquals(hidden_id, id)
-		
-	def test_hide_id2(self):
-		id = 45115123
-		hidden_id = self.id_hider.hide_id(id)
-		self.assertTrue(hidden_id < 2**32)
-		self.assertNotEquals(hidden_id, id)
-		
-	def test_unhide_id_32_bit(self):
-		id = 2**32-1
-		hidden_id = self.id_hider.hide_id(id)
-		self.assertTrue(hidden_id < 2**32)
-		self.assertEquals(self.id_hider.unhide_id(hidden_id), id)
-		
-	def test_unhide_only_with_same_secret_key(self):
-		id = 4161267685
-		false_id_hider = IDHider('False secret key')
-		hidden_id = self.id_hider.hide_id(id)
-		self.assertEquals(self.id_hider.unhide_id(hidden_id), id)
-		self.assertNotEquals(false_id_hider.unhide_id(hidden_id), id)
-		self.assertNotEquals(self.id_hider.unhide_id(false_id_hider.hide_id(id)), id)
-		self.assertTrue(hidden_id < 2**32)
-		
+	def test_unhiding(self):
+		unhidden = self.id_hider.unhide_id(0x819d5f1f);
+		self.assertEquals(unhidden, 0x33221100)
+
 if __name__ == '__main__':
-    unittest.main()
+	unittest.main()

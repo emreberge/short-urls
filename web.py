@@ -4,13 +4,12 @@ from flask import Flask, render_template, redirect, url_for, request, make_respo
 from flaskext.sqlalchemy import SQLAlchemy
 from b64 import *
 from url_validator import is_valid_url
-from IDHider import IDHider
-
+from skip32 import skip32
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 
-id_hider = IDHider(os.environ.get('SECRET_KEY'))
+id_hider = skip32(os.environ.get('SECRET_KEY'))
 
 if not os.environ.get('PROD'):
     app.config['SQLALCHEMY_ECHO'] = False
