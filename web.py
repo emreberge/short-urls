@@ -8,8 +8,8 @@ from skip32 import skip32
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-
 id_hider = skip32(os.environ.get('SECRET_KEY'))
+analytics_tracking_id = os.environ.get('ANALYTICS_TRACKING_ID')
 
 if not os.environ.get('PROD'):
     app.config['SQLALCHEMY_ECHO'] = False
@@ -40,7 +40,7 @@ class Url(db.Model):
 
 @app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template('index.html', analytics_tracking_id=analytics_tracking_id)
 
 REQUEST_URL_PARAMETER_NAME='url_address'
 

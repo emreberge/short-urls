@@ -87,6 +87,10 @@ Configure the secret key **THIS HAS TO BE 10 CHAR LONG**
 
     heroku config:add SECRET_KEY=secret-key
 
+Optionally configure google analytics
+
+    heroku config:add ANALYTICS_TRACKING_ID=<Your Tracking ID>
+
 Deploy
 
     git push heroku master
