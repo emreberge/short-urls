@@ -10,7 +10,7 @@ from werkzeug.exceptions import NotFound
 from b64 import *
 from skip32 import skip32
 
-DB_FIRST_INDEX = 'bT6bSa'
+SKIP_32_CODED_SHORT_URL_FOR_DB_FIRST_INDEX = 'bT6bSa'
 
 class Test_Web_App(unittest.TestCase):
         
@@ -28,7 +28,7 @@ class Test_Web_App(unittest.TestCase):
     def test_valid_url(self):
         self.url_redirects_to('http://emreberge.com', 'http://emreberge.com')
         
-    def url_redirects_to(self, test_url, redirect_url, db_index=DB_FIRST_INDEX):
+    def url_redirects_to(self, test_url, redirect_url, db_index=SKIP_32_CODED_SHORT_URL_FOR_DB_FIRST_INDEX):
         request_data = self.request_data_with_url(test_url)
         response_data = self.app.post('/', data=request_data).data
         self.response_data_is_json(response_data, db_index)
@@ -102,8 +102,8 @@ class Test_Web_App(unittest.TestCase):
 # Feature tests
 
     def test_urls_allready_in_the_db_should_return_same_short_url(self):
-        self.url_redirects_to('www.emreberge.com', 'http://www.emreberge.com', DB_FIRST_INDEX);
-        self.url_redirects_to('www.emreberge.com', 'http://www.emreberge.com', DB_FIRST_INDEX);
+        self.url_redirects_to('www.emreberge.com', 'http://www.emreberge.com', SKIP_32_CODED_SHORT_URL_FOR_DB_FIRST_INDEX);
+        self.url_redirects_to('www.emreberge.com', 'http://www.emreberge.com', SKIP_32_CODED_SHORT_URL_FOR_DB_FIRST_INDEX);
         
 class Test_Url(unittest.TestCase):
                 
@@ -118,11 +118,13 @@ class Test_Url(unittest.TestCase):
         self.assertEqual(url.short_url(), 'L2kam')
         
     def test_short_url_B(self):
-        self.assertEqual(Url.id_for_short_url('bT6bSa'), 1)
-    
+		skip32_encoded_short_url_for_b = 'bT6bSa'
+		self.assertEqual(Url.id_for_short_url(skip32_encoded_short_url_for_b), 1)
+
     def test_short_url_X(self):
-        self.assertEqual(Url.id_for_short_url('L2kam'), 23)
-                        
+		skip32_encoded_short_url_for_x = 'L2kam'
+		self.assertEqual(Url.id_for_short_url(skip32_encoded_short_url_for_x), 23)
+
 class Test_b64(unittest.TestCase):
     
     def test_encode_decode_1(self):
