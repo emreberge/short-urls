@@ -8,7 +8,7 @@ The project has lots of tests and serves as the documentation of the project.
 Scaling
 -------
 
-To handle the increasing amount of requests the database should be copied regularly and used by several instances of the app that redirect short urls.
+To handle the increasing amount of requests the database can be copied regularly and used by several instances of the app that redirect short urls. So URLs are created by a single instance but lookups are made by several. But what happens if a lookup is made before that entry is copied to the helper instances? To prevent error this may cause, the helper instances should forward the lookup to the main instance incase it can't be found on the helper instances database.
 
 Setup & Run
 -----------
