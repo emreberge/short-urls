@@ -6,7 +6,7 @@ skip32.py
 Created by Emre Berge Ergenekon on 2012-06-02.
 Copyright (c) 2012 Emre Berge Ergenekon. All rights reserved.
 
-Ported from C original code can be found:
+Ported from C, original code can be found:
 http://search.cpan.org/~esh/Crypt-Skip32-0.17/lib/Crypt/Skip32.pm#ORIGINAL_C_SOURCE
 
 Original copy right:
