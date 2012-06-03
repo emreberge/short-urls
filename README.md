@@ -5,6 +5,8 @@ Yet an other url shortener. Because there isn't enough out there! This is a proj
 
 The project has lots of tests and serves as the documentation of the project.
 
+A live instance of the app can be found at [s.emreberge.com](http://s.emreberge.com/)
+
 Scaling
 -------
 
